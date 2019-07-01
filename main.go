@@ -2,14 +2,16 @@ package main
 
 import (
 	"go-rest-api/controller"
-	"go-rest-api/model"
 	"log"
 	"net/http"
+	"fmt"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
+fmt.Println("Connected.")
+
 	r := mux.NewRouter()
 	r.HandleFunc("/register", controller.RegisterHandler).
 		Methods("POST")
