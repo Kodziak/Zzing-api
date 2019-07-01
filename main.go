@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-rest-api/controller"
+	"go-rest-api/model"
 	"log"
 	"net/http"
 
