@@ -29,6 +29,6 @@ func main() {
 	r.HandleFunc("/profile", controller.ProfileHandler).
 		Methods("GET")
 
-	fmt.Println("Server is ready and is listening at port :8000 . . .")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	fmt.Println("Server is ready and is listening at port :3000 . . .")
+	log.Fatal(http.ListenAndServe(":3000", r))
 }
