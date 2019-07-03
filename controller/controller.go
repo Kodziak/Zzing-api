@@ -55,6 +55,22 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 				json.NewEncoder(w).Encode(res)
 				return
 			}
+
+			token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+				"username":  user.Username,
+				"email": 	 user.Email,
+				"firstname": user.FirstName,
+			})
+
+			tokenString, err := token.SignedString([]byte("secret"))
+
+			if err != nil {
+				res.Error = "Error while generating token,Try again"
+				json.NewEncoder(w).Encode(res)
+				return
+			}
+
+			res.Token = tokenString
 			res.Result = "Registration Successful"
 			json.NewEncoder(w).Encode(res)
 			return
