@@ -59,7 +59,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 			token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 				"username":  user.Username,
 				"email": 	 user.Email,
-				"firstname": user.FirstName,
 			})
 
 			tokenString, err := token.SignedString([]byte("secret"))
@@ -112,14 +111,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = collection.FindOne(context.TODO(), bson.D{{"email", user.Email}}).Decode(&result)
-
-	if err != nil {
-		res.Error = "Invalid email"
-		json.NewEncoder(w).Encode(res)
-		return
-	}
-
 	err = bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(user.Password))
 
 	if err != nil {
@@ -130,8 +121,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username":  result.Username,
-		"email": 	 result.Email,
-		"firstname": result.FirstName,
+		"email": 	 result.Email
 	})
 
 	tokenString, err := token.SignedString([]byte("secret"))
@@ -164,7 +154,6 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		result.Username = claims["username"].(string)
 		result.Email = claims["email"].(string)
-		result.FirstName = claims["firstname"].(string)
 
 		json.NewEncoder(w).Encode(result)
 		return
