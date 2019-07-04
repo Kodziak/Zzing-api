@@ -121,7 +121,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username":  result.Username,
-		"email": 	 result.Email
+		"email": 	 result.Email,
 	})
 
 	tokenString, err := token.SignedString([]byte("secret"))
