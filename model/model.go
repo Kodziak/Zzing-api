@@ -5,12 +5,11 @@ type User struct {
 	Email 	  string `json:"email"`
 	Password  string `json:"password"`
 	Token     string `json:"token"`
-	Savings    []Saving
+	Savings   []Saving `json:"savings"`
 }
 
 type Saving struct {
 	Category  string `json:"category"`
-	Date      string `json:"date"`
 	Amount    string `json:"amount"`
 }
 

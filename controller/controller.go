@@ -168,7 +168,8 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 func SavingHandler(w http.ResponseWriter, r *http.Request) {
 	
 	w.Header().Set("Content-Type", "application/json")
-	var user model.User
+	user := model.User{}
+	// var saving model.Saving
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &user)
 	var res model.ResponseResult
@@ -177,6 +178,8 @@ func SavingHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(res)
 		return
 	}
+	// err := json.NewDecoder(r.Body).Decode(&user)
+	fmt.Println(user.Username)
 
 	collection, err := db.GetDBCollection()
 
@@ -190,20 +193,9 @@ func SavingHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
-
-			data := []model.Saving{model.Saving{
-				Category: "12",
-				Date: "12",
-				Amount: "12",
-			},
-		}
-
-			Who := bson.D{{"username", user.Username}}
-			PushToArray := bson.M{"$push": bson.M{"saving": bson.M{"$each": data}}}
-			fmt.Println(Who)
-			fmt.Println(PushToArray)
+			Who := bson.D{{"username", user.Username[1 : len(user.Username)-1]}}
+			PushToArray := bson.M{"$push": bson.M{"savings": bson.M{"$each": user.Savings}}}
 			_, err = collection.UpdateOne(context.TODO(), Who, PushToArray)
-		
 		
 			res.Token = ""
 			res.Result = "Successfully added."
