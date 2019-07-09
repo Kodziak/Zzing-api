@@ -87,7 +87,6 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
-
 	w.Header().Set("Content-Type", "application/json")
 	var user model.User
 	body, _ := ioutil.ReadAll(r.Body)
@@ -137,7 +136,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	result.Password = ""
 
 	json.NewEncoder(w).Encode(result)
-
 }
 
 func ProfileHandler(w http.ResponseWriter, r *http.Request) {
@@ -169,7 +167,6 @@ func SavingHandler(w http.ResponseWriter, r *http.Request) {
 	
 	w.Header().Set("Content-Type", "application/json")
 	user := model.User{}
-	// var saving model.Saving
 	body, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(body, &user)
 	var res model.ResponseResult
@@ -178,7 +175,6 @@ func SavingHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(res)
 		return
 	}
-	// err := json.NewDecoder(r.Body).Decode(&user)
 	fmt.Println(user.Username)
 
 	collection, err := db.GetDBCollection()
@@ -211,4 +207,35 @@ func SavingHandler(w http.ResponseWriter, r *http.Request) {
 	res.Result = "Invalid."
 	json.NewEncoder(w).Encode(res)
 	return
+}
+
+func GetSavingsHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var user model.User
+	body, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(body, &user)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	collection, err := db.GetDBCollection()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	var result model.User
+	var res model.ResponseResult
+
+	err = collection.FindOne(context.TODO(), bson.D{{"username", user.Username}}).Decode(&result)
+
+	if err != nil {
+		res.Error = "Invalid username"
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+
+	result.Token = ""
+	result.Password = ""
+
+	json.NewEncoder(w).Encode(result)
 }
