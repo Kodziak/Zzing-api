@@ -28,6 +28,8 @@ func main() {
 		Methods("POST")
 	r.HandleFunc("/profile", controller.ProfileHandler).
 		Methods("GET")
+	r.HandleFunc("/add-saving", controller.SavingHandler).
+		Methods("POST")
 
 	fmt.Println("Server is ready and is listening at port :3000 . . .")
 	log.Fatal(http.ListenAndServe(":3000", r))

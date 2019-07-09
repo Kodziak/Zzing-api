@@ -48,6 +48,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			user.Password = string(hash)
+			user.Saving = []model.Saving{}
 
 			_, err = collection.InsertOne(context.TODO(), user)
 			if err != nil {
@@ -162,5 +163,105 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(res)
 		return
 	}
+}
 
+func UpdateSaving(w http.ResponseWriter, r *http.Request) {
+	
+	w.Header().Set("Content-Type", "application/json")
+	var user model.User
+	body, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(body, &user)
+	var res model.ResponseResult
+	if err != nil {
+		res.Error = err.Error()
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+
+	collection, err := db.GetDBCollection()
+
+	if err != nil {
+		res.Error = err.Error()
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+	var result model.User
+	err = collection.FindOne(context.TODO(), bson.D{{"username", user.Username}}).Decode(&result)
+
+	if err != nil {
+		if err.Error() == "mongo: no documents in result" {
+			match := bson.D{{"username", user.Username}}
+			change := bson.D{{"$set", bson.D{{"saving", user.Saving}}}}
+			_, err = collection.UpdateOne(context.TODO(), match, change)
+
+			res.Token = ""
+			res.Result = "Successfully added."
+			json.NewEncoder(w).Encode(res)
+			return
+		}
+
+		res.Error = err.Error()
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+
+	res.Result = "Invalid."
+	json.NewEncoder(w).Encode(res)
+	return
+}
+
+func SavingHandler(w http.ResponseWriter, r *http.Request) {
+	
+	w.Header().Set("Content-Type", "application/json")
+	var user model.User
+	body, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(body, &user)
+	var res model.ResponseResult
+	if err != nil {
+		res.Error = err.Error()
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+
+	collection, err := db.GetDBCollection()
+
+	if err != nil {
+		res.Error = err.Error()
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+	var result model.User
+	err = collection.FindOne(context.TODO(), bson.D{{"username", user.Username}}).Decode(&result)
+
+	if err != nil {
+		if err.Error() == "mongo: no documents in result" {
+
+			data := []model.Saving{model.Saving{
+				Category: "12",
+				Date: "12",
+				Amount: "12",
+			},
+		}
+
+			Who := bson.D{{"username", user.Username}}
+			PushToArray := bson.M{"$push": bson.M{"saving": data}}
+			fmt.Println(Who)
+			fmt.Println(PushToArray)
+			_, err = collection.UpdateOne(context.TODO(), Who, PushToArray)
+		
+		
+			res.Token = ""
+			res.Result = "Successfully added."
+			json.NewEncoder(w).Encode(res)
+			return
+		}
+
+		res.Error = err.Error()
+		json.NewEncoder(w).Encode(res)
+		return
+	}
+
+	res.Result = "Invalid."
+	json.NewEncoder(w).Encode(res)
+	return
 }
