@@ -174,7 +174,6 @@ func SavingHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(res)
 		return
 	}
-	fmt.Println(user.Username)
 
 	collection, err := db.GetDBCollection()
 

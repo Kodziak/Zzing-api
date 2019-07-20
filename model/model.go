@@ -9,6 +9,7 @@ type User struct {
 }
 
 type Saving struct {
+	ID        int	 `json:"ID"`
 	Category  string `json:"category"`
 	Amount    string `json:"amount"`
 }

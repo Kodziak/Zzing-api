@@ -28,9 +28,9 @@ func main() {
 		Methods("POST")
 	r.HandleFunc("/profile", controller.ProfileHandler).
 		Methods("GET")
-	r.HandleFunc("/add-saving", controller.SavingHandler).
+	r.HandleFunc("/savings/add", controller.SavingHandler).
 		Methods("POST")
-	r.HandleFunc("/get-savings", controller.GetSavingsHandler).
+	r.HandleFunc("/savings", controller.GetSavingsHandler).
 		Methods("GET")
 
 	fmt.Println("Server is ready and is listening at port :3000 . . .")
