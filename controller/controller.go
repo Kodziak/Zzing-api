@@ -182,6 +182,7 @@ func SavingHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(res)
 		return
 	}
+	
 	var result model.User
 	err = collection.FindOne(context.TODO(), bson.D{{"username", user.Username}}).Decode(&result)
 
@@ -211,7 +212,6 @@ func GetSavingsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	tokenString := r.Header.Get("Authorization")
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		// Don't forget to validate the alg is what you expect:
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method")
 		}
