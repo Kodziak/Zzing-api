@@ -28,7 +28,7 @@ func main() {
 		Methods("POST")
 	r.HandleFunc("/profile", controller.ProfileHandler).
 		Methods("GET")
-	r.HandleFunc("/savings", controller.SavingHandler).
+	r.HandleFunc("/savings/add", controller.SavingHandler).
 		Methods("POST")
 	r.HandleFunc("/savings", controller.GetSavingsHandler).
 		Methods("GET")
